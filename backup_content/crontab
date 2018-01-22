@@ -1,0 +1,2 @@
+MAILTO="tuatini@theenk.io"
+@midnight root /root/backup_wordpress_data.sh
