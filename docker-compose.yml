@@ -9,18 +9,21 @@ services:
         volumes:
             - ./nginx_config_content/nginx.conf:/etc/nginx/nginx.conf:ro
             - ./wordpress:/var/www/html
-        links:
-            - wordpress
         restart: always
 
     mysql:
-        image: mysql
+        image: mariadb
         ports:
             - 3306:3306
         volumes:
             - ./db-data:/var/lib/mysql
         environment:
             MYSQL_ROOT_PASSWORD: aqwe123
+            MYSQL_DATABASE: wpdb
+            MYSQL_USER: mysql
+            MYSQL_PASSWORD: "aqwe123"
+        depends_on:
+            - wordpress
         restart: always
 
     wordpress:
@@ -34,13 +37,7 @@ services:
           WORDPRESS_TABLE_PREFIX: wp_
           WORDPRESS_DB_HOST: mysql
           WORDPRESS_DB_PASSWORD: aqwe123
-      links:
-          - mysql
+          MYSQL_PORT_3306_TCP: 3306
+      depends_on:
+          - nginx
       restart: always
-
-    wordpress_backup:
-        build: ./backup_content
-        container_name: wordpress_backup_container
-        volumes:
-            - .:/root/backup_content
-        restart: always
