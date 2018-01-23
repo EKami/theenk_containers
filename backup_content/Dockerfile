@@ -9,7 +9,7 @@ RUN apt-get install -y git; apt-get install -y ssh
 RUN apt-get install -y man
 
 # Copy local files to appropriate folders
-COPY ./backup_blog_data.sh $home
+COPY ./backup_wordpress_data.sh $home
 COPY ./ssh/ $home/.ssh/
 ADD ./crontab /etc/cron.d/backup_wordpress
 
@@ -20,16 +20,16 @@ RUN chmod 0644 /etc/cron.d/backup_wordpress
 
 # Configure git
 RUN git config --global push.default simple
-RUN git config --global user.name "Backup blog container"
-RUN git config --global user.email "tuatinigodard@gmail.com"
+RUN git config --global user.name "Backup wordpress container"
+RUN git config --global user.email "tuatini@theenk.io"
 
 ##--------------- Setup crontab to backup blog db
 
 # Create the log file to be able to run tail
 RUN touch /var/log/cron.log
 
-# Activate backup blog cron
-RUN crontab /etc/cron.d/backup_blog
+# Activate backup_wordpress cron
+RUN crontab /etc/cron.d/backup_wordpress
 
 # Finally watch for cron logs
 CMD cron && tail -f /var/log/cron.log

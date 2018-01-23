@@ -1,29 +1,42 @@
 version: '3'
 
 services:
-    nginx-proxy:
+    nginx:
         image: nginx
-        container_name: nginx_proxy_container
         ports:
             - 80:80
             - 443:443
         volumes:
             - ./nginx_config_content/nginx.conf:/etc/nginx/nginx.conf:ro
+            - ./wordpress:/var/www/html
+        links:
+            - wordpress
         restart: always
 
-    wordpress-cont:
-      image: wordpress
-      ports:
-          - 8080:80
-      environment:
-          WORDPRESS_DB_PASSWORD: example
-      restart: always
-
     mysql:
-      image: mysql:5.7
-      restart: always
+        image: mysql
+        ports:
+            - 3306:3306
+        volumes:
+            - ./db-data:/var/lib/mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: aqwe123
+        restart: always
+
+    wordpress:
+      image: wordpress:4.9.2-php7.0-fpm
+      ports:
+          - 9000:9000
+      volumes:
+          - ./wordpress:/var/www/html
       environment:
-          MYSQL_ROOT_PASSWORD: example
+          WORDPRESS_DB_NAME: wpdb
+          WORDPRESS_TABLE_PREFIX: wp_
+          WORDPRESS_DB_HOST: mysql
+          WORDPRESS_DB_PASSWORD: aqwe123
+      links:
+          - mysql
+      restart: always
 
     wordpress_backup:
         build: ./backup_content
