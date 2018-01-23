@@ -3,6 +3,8 @@ version: '3'
 services:
     nginx:
         image: nginx
+        links:
+            - mysql
         ports:
             - 80:80
             - 443:443
@@ -13,31 +15,24 @@ services:
 
     mysql:
         image: mariadb
-        ports:
-            - 3306:3306
         volumes:
             - ./db-data:/var/lib/mysql
         environment:
-            MYSQL_ROOT_PASSWORD: aqwe123
+            MYSQL_ROOT_PASSWORD: "aqwe123"
             MYSQL_DATABASE: wpdb
             MYSQL_USER: mysql
             MYSQL_PASSWORD: "aqwe123"
-        depends_on:
-            - wordpress
         restart: always
 
     wordpress:
-      image: wordpress:4.9.2-php7.0-fpm
-      ports:
-          - 9000:9000
+      image: wordpress:4.9.2-fpm
+      links:
+          - mysql
       volumes:
           - ./wordpress:/var/www/html
       environment:
           WORDPRESS_DB_NAME: wpdb
           WORDPRESS_TABLE_PREFIX: wp_
           WORDPRESS_DB_HOST: mysql
-          WORDPRESS_DB_PASSWORD: aqwe123
-          MYSQL_PORT_3306_TCP: 3306
-      depends_on:
-          - nginx
+          WORDPRESS_DB_PASSWORD: "aqwe123"
       restart: always
