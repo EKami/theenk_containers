@@ -7,7 +7,7 @@ if [[ $UID != 0 ]]; then
     exit 1
 fi
 BLUE='\033[0;34m'
-RED='\033[0;31m'
+GREEN='\033[0;32m'
 NC='\033[0m' # No Color
 
 echo -e "${BLUE}Installing dependencies...${NC}"
@@ -36,4 +36,4 @@ sudo cp -fR ./letsencrypt /etc/
 echo -e "${BLUE}Running compose...${NC}"
 sudo ./docker-compose up -d
 
-echo -e "${RED}Configuration finished, DO NOT MOVE THIS FOLDER SOMEPLACE ELSE OR RERUN THIS SCRIPT...${NC}"
+echo -e "${GREEN}Configuration finished, DO NOT MOVE THIS FOLDER SOMEPLACE ELSE...${NC}"
