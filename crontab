@@ -1,0 +1,2 @@
+MAILTO="tuatini@theenk.io"
+30 2 * * 1 root /etc/letsencrypt/launch_renewal.sh >> /var/log/certbot-renew.log

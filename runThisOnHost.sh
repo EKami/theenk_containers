@@ -7,6 +7,7 @@ if [[ $UID != 0 ]]; then
     exit 1
 fi
 BLUE='\033[0;34m'
+RED='\033[0;31m'
 NC='\033[0m' # No Color
 
 echo -e "${BLUE}Installing dependencies...${NC}"
@@ -20,9 +21,19 @@ sudo apt-get update
 sudo apt-get install -y docker-ce
 sudo apt-get install python-certbot-nginx 
 
+echo -e "${BLUE}Adding certbot renew to crontab...${NC}"
+rm -rf ./letsencrypt/launch_renewal.sh
+touch ./letsencrypt/launch_renewal.sh
+chmod +x ./letsencrypt/launch_renewal.sh
+echo "#!/bin/bash" >> ./letsencrypt/launch_renewal.sh
+echo "certbot renew --authenticator webroot --webroot-path $PWD/wordpress/" >> ./letsencrypt/launch_renewal.sh
+sudo crontab ./crontab
+
 echo -e "${BLUE}Restoring certbot config...${NC}"
 sudo rm -rf /etc/letsencrypt
 sudo cp -fR ./letsencrypt /etc/
 
 echo -e "${BLUE}Running compose...${NC}"
 sudo ./docker-compose up -d
+
+echo -e "${RED}Configuration finished, DO NOT MOVE THIS FOLDER SOMEPLACE ELSE OR RERUN THIS SCRIPT...${NC}"
